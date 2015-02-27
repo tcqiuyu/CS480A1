@@ -1,6 +1,5 @@
 package cs480a1.yqiu.ngram;
 
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -31,14 +30,29 @@ public class NGramMapper extends Mapper<Text, TextArrayWritable, TextArrayWritab
     }
 
     private void doNGram(int n, String[] words) throws IOException, InterruptedException {
+        String[] newWords;
+        if (n != 1) {
+            newWords = new String[words.length + 2];
+            newWords[0] = " ";
+            for (int i = 0; i < words.length; i++) {
+                newWords[i + 1] = words[i];
+            }
+            newWords[newWords.length] = " ";
+        } else {
+            newWords = words;
+        }
 
-        for (int i = 0; i < words.length; i++) {
-            String nGramStr = words[i];
-            for (int j = 1; j < n; j++) {
-                nGramStr = nGramStr + "/t" + words[i + j];
+        for (int i = 0; i < newWords.length; i++) {
+            String nGramStr = null;
+            if (n != 1) {
+                for (int j = 1; j < n; j++) {
+                    nGramStr = nGramStr + "/t" + newWords[i + j];
+                }
             }
             //replace all non-alphanumeric char
-            nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9 ]", "");
+            if (nGramStr != null) {
+                nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9 ]", "");
+            }
             //key = nGram + release year + filename
             String[] keyStr = new String[]{nGramStr, releaseYearStr, String.valueOf(n)};
             TextArrayWritable key = new TextArrayWritable(keyStr);

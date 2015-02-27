@@ -25,7 +25,6 @@ public class MultipleBooksReader extends RecordReader<Text, TextArrayWritable> {
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
         CombineFileSplit combineFileSplit = (CombineFileSplit) split;
-        long[] startsLoc = combineFileSplit.getStartOffsets();
         FileSplit fileSplit = new FileSplit(combineFileSplit.getPath(index), combineFileSplit.getOffset(index),
                 combineFileSplit.getLength(), combineFileSplit.getLocations());
 
