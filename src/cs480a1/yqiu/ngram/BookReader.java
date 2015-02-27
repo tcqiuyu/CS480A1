@@ -111,18 +111,6 @@ public class BookReader extends RecordReader<Text, TextArrayWritable> {
                 || lineString.startsWith("December");
     }
 
-//    public void checkFileEnd() throws IOException {
-    //REVIEW:NEED THIS?
-    //check file end, and move position to new file start
-//        if (currentLine.toString().startsWith("End of the Project Gutenberg")) {
-//            fileCount++;
-//            long nextPos = startsLoc[fileCount];
-//
-//            inputStream.seek(nextPos);
-//            currentPos = startsLoc[fileCount];
-//            prepareToScanBook();
-//        }
-//    }
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
@@ -130,7 +118,6 @@ public class BookReader extends RecordReader<Text, TextArrayWritable> {
             return false;
         }
 
-//        this.checkFileEnd();
 
         if (currentLine.toString().startsWith("End of the Project Gutenberg")) {
             return false;
