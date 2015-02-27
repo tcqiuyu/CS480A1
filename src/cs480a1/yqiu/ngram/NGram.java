@@ -8,7 +8,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
 
 import java.io.IOException;
 
@@ -19,7 +18,6 @@ public class NGram {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
-        String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
         Job job = Job.getInstance(conf, "Count NGram");
 
@@ -35,11 +33,11 @@ public class NGram {
 
         //input
         FileInputFormat.setInputPathFilter(job, TXTFilter.class);
-        FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
+        FileInputFormat.addInputPath(job, new Path(args[args.length - 1]));
         job.setInputFormatClass(MultipleBooksInputFormat.class);
 
         //output
-        FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+        FileOutputFormat.setOutputPath(job, new Path(args[args.length]));
         job.setOutputFormatClass(TextOutputFormat.class);
         job.setOutputKeyClass(ArrayWritable.class);
         job.setOutputValueClass(IntArrayWritable.class);
