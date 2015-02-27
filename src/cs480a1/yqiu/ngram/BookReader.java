@@ -4,7 +4,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -17,31 +16,35 @@ import java.io.IOException;
 /**
  * Created by Qiu on 2/26/2015.
  */
-public class BookReader extends RecordReader<IntWritable, Text> {
+public class BookReader extends RecordReader<Text, TextArrayWritable> {
 
     private LineReader lineReader;
-    private IntWritable key = new IntWritable();
-    private Text value = new Text();
+    private Text key = new Text();
+    private TextArrayWritable value;
 
     private long start;
     private long end;
     private long currentPos;
 
-    private int releaseYear;
+    private String filename;
     private Text currentLine = new Text();
+    private Text currentSentence = new Text("");
+
+    private FSDataInputStream inputStream;
 
     @Override
     public void initialize(InputSplit inputSplit, TaskAttemptContext context) throws IOException, InterruptedException {
         FileSplit split = (FileSplit) inputSplit;
         Configuration configuration = context.getConfiguration();
         Path path = split.getPath();
+        filename = path.getName();
         FileSystem fileSystem = path.getFileSystem(configuration);
-        FSDataInputStream inputStream = fileSystem.open(path);
+        inputStream = fileSystem.open(path);
         lineReader = new LineReader(inputStream, configuration);
-
         //initial start point and end point
         start = split.getStart();
         end = start + split.getLength();
+
 
         inputStream.seek(start);
         if (start != 0) {
@@ -50,6 +53,11 @@ public class BookReader extends RecordReader<IntWritable, Text> {
 
         start += lineReader.readLine(currentLine);
 
+        prepareToScanBook();
+
+    }
+
+    private void prepareToScanBook() throws IOException {
         //get release year
         while (!containReleaseDate(currentLine)) {
             start += lineReader.readLine(currentLine);
@@ -77,16 +85,15 @@ public class BookReader extends RecordReader<IntWritable, Text> {
     private boolean containReleaseDate(Text text) {
         String lineString = text.toString();
         //two cases:
-        if (lineString.startsWith("Release Date")) {//e.g. October, 1998
+        if (lineString.startsWith("Release Date") || startWithMonths(lineString)) {//e.g. October, 1998 or Release Date: July, 1991
             String[] releaseDateString = lineString.split(" ");
-            releaseYear = Integer.parseInt(releaseDateString[releaseDateString.length]);
-            return true;
-        } else if (startWithMonths(lineString)) {//e.g. Release Date: July, 1991
-            String[] releaseDateString = lineString.split(" ");
-            releaseYear = Integer.parseInt(releaseDateString[releaseDateString.length]);
+            String releaseYearStr = releaseDateString[releaseDateString.length];
+            String[] valueStr = new String[]{releaseYearStr, filename};
+            value = new TextArrayWritable(valueStr);
             return true;
         }
         return false;
+
     }
 
     private boolean startWithMonths(String lineString) {
@@ -104,44 +111,72 @@ public class BookReader extends RecordReader<IntWritable, Text> {
                 || lineString.startsWith("December");
     }
 
+//    public void checkFileEnd() throws IOException {
+    //REVIEW:NEED THIS?
+    //check file end, and move position to new file start
+//        if (currentLine.toString().startsWith("End of the Project Gutenberg")) {
+//            fileCount++;
+//            long nextPos = startsLoc[fileCount];
+//
+//            inputStream.seek(nextPos);
+//            currentPos = startsLoc[fileCount];
+//            prepareToScanBook();
+//        }
+//    }
+
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (currentPos > end) {
             return false;
         }
-//        currentPos += lineReader.readLine(currentLine);
 
-        String remainLine = "";
-        //TODO:simple split by ".". Does not include abbr. case
-        if (!remainLine.contains(".")) {
-            String line1 = remainLine;
-            Text line2 = new Text();
-            boolean flag = true;
-            while (flag && ( != lineReader.readLine(line2))) {
+//        this.checkFileEnd();
 
-            }
-
+        if (currentLine.toString().startsWith("End of the Project Gutenberg")) {
+            return false;
         }
+
+        //TODO:simple split by ".". Does not include abbr. case
+        if (currentSentence.find(".") != -1) {
+            boolean flag = true;
+            while (flag && (0 != lineReader.readLine(currentLine))) {
+                if (currentLine.find(".") != -1) {//if current line has period
+                    flag = false;
+                    int periodPos = currentLine.find(".");//period position
+                    currentSentence.append(currentLine.getBytes(), 0, periodPos);//concat with current sentence
+                    this.key = currentSentence;
+                    return true;
+                } else {//if current line does not have period, concat whole line to current sentence
+                    currentSentence.append(currentLine.getBytes(), 0, currentLine.getLength());
+                }
+            }
+        }
+
         return false;
     }
 
+
     @Override
-    public IntWritable getCurrentKey() throws IOException, InterruptedException {
+    public Text getCurrentKey() throws IOException, InterruptedException {
         return key;
     }
 
     @Override
-    public Text getCurrentValue() throws IOException, InterruptedException {
+    public TextArrayWritable getCurrentValue() throws IOException, InterruptedException {
         return value;
     }
 
     @Override
     public float getProgress() throws IOException, InterruptedException {
-        return 0;
+        if (start == end) {
+            return 0.0f;
+        } else {
+            return Math.min(1.0f, (currentPos - start) / (float) (end - start));
+        }
     }
 
     @Override
     public void close() throws IOException {
-
+        lineReader.close();
     }
 }
