@@ -10,7 +10,7 @@ public class TXTFilter implements PathFilter {
     @Override
     public boolean accept(Path path) {
         String name = path.getName();
-        //only process txt files. Ignore hidden files.
+        //only process txt files.
         return name.endsWith("txt");
     }
 }
