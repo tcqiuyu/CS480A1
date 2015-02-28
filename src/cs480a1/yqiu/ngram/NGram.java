@@ -37,7 +37,7 @@ public class NGram {
         job.setInputFormatClass(MultipleBooksInputFormat.class);
 
         //output
-        FileOutputFormat.setOutputPath(job, new Path(args[args.length-1]));
+        FileOutputFormat.setOutputPath(job, new Path(args[args.length - 1]));
         job.setOutputFormatClass(TextOutputFormat.class);
         job.setOutputKeyClass(ArrayWritable.class);
         job.setOutputValueClass(IntArrayWritable.class);

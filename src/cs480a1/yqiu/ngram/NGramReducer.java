@@ -39,9 +39,9 @@ public class NGramReducer extends Reducer<TextArrayWritable, IntArrayWritable, T
         TextArrayWritable outputKey = new TextArrayWritable(new String[]{ngramStr, yearStr});
 
         if (key.get()[2].toString().matches("1")) {
-            multipleOutputs.write("Unigram Profile", outputKey, outputValue);
+            multipleOutputs.write("Unigram", outputKey, outputValue);
         } else if (key.get()[2].toString().matches("2")) {
-            multipleOutputs.write("Bigram Profile", outputKey, outputValue);
+            multipleOutputs.write("Bigram", outputKey, outputValue);
         }
     }
 
