@@ -40,9 +40,9 @@ public class NGramReducer extends Reducer<TextArrayWritable, IntArrayWritable, T
 
         System.out.println("reduce ket is : " + outputKey);
         if (key.get()[2].toString().matches("1")) {
-            multipleOutputs.write("Unigram", outputKey, outputValue);
+            multipleOutputs.write(outputKey, outputValue, "Unigram");
         } else if (key.get()[2].toString().matches("2")) {
-            multipleOutputs.write("Bigram", outputKey, outputValue);
+            multipleOutputs.write(outputKey, outputValue, "Bigram");
         }
     }
 
