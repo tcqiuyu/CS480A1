@@ -42,6 +42,6 @@ public class NGram {
         job.setOutputKeyClass(ArrayWritable.class);
         job.setOutputValueClass(IntArrayWritable.class);
 
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        job.waitForCompletion(true);
     }
 }
