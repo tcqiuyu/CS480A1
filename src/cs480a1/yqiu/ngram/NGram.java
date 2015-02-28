@@ -33,15 +33,15 @@ public class NGram {
 
         //input
         FileInputFormat.setInputPathFilter(job, TXTFilter.class);
-        FileInputFormat.addInputPath(job, new Path(args[args.length - 2]));
+        FileInputFormat.addInputPaths(job, args[args.length-2]);
         job.setInputFormatClass(MultipleBooksInputFormat.class);
 
         //output
         FileOutputFormat.setOutputPath(job, new Path(args[args.length - 1]));
+
         job.setOutputFormatClass(TextOutputFormat.class);
         job.setOutputKeyClass(ArrayWritable.class);
         job.setOutputValueClass(IntArrayWritable.class);
-
         job.waitForCompletion(true);
     }
 }
