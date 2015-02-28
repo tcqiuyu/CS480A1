@@ -2,7 +2,6 @@ package cs480a1.yqiu.ngram;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -17,6 +16,7 @@ import java.io.IOException;
 public class NGram {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        System.out.println("Program started!");
         Configuration conf = new Configuration();
 
         Job job = Job.getInstance(conf, "Count NGram");

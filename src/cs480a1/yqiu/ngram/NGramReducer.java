@@ -38,6 +38,7 @@ public class NGramReducer extends Reducer<TextArrayWritable, IntArrayWritable, T
 
         TextArrayWritable outputKey = new TextArrayWritable(new String[]{ngramStr, yearStr});
 
+        System.out.println("reduce ket is : " + outputKey);
         if (key.get()[2].toString().matches("1")) {
             multipleOutputs.write("Unigram", outputKey, outputValue);
         } else if (key.get()[2].toString().matches("2")) {

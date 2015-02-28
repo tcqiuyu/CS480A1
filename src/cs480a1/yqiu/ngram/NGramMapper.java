@@ -55,6 +55,7 @@ public class NGramMapper extends Mapper<Text, TextArrayWritable, TextArrayWritab
             }
             //key = nGram + release year + filename
             String[] keyStr = new String[]{nGramStr, releaseYearStr, String.valueOf(n)};
+            System.out.println("Mapped key is : " + keyStr);
             TextArrayWritable key = new TextArrayWritable(keyStr);
             IntWritable[] val = new IntWritable[]{new IntWritable(1), new IntWritable(1)};
             IntArrayWritable value = new IntArrayWritable(val);
