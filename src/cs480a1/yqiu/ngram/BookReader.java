@@ -87,7 +87,7 @@ public class BookReader extends RecordReader<Text, TextArrayWritable> {
         //two cases:
         if (lineString.startsWith("Release Date") || startWithMonths(lineString)) {//e.g. October, 1998 or Release Date: July, 1991
             String[] releaseDateString = lineString.split(" ");
-            String releaseYearStr = releaseDateString[releaseDateString.length];
+            String releaseYearStr = releaseDateString[releaseDateString.length - 1];
             String[] valueStr = new String[]{releaseYearStr, filename};
             value = new TextArrayWritable(valueStr);
             return true;

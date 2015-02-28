@@ -32,12 +32,12 @@ public class NGramMapper extends Mapper<Text, TextArrayWritable, TextArrayWritab
     private void doNGram(int n, String[] words) throws IOException, InterruptedException {
         String[] newWords;
         if (n != 1) {
-            newWords = new String[words.length + 2];
+            newWords = new String[words.length + 1];
             newWords[0] = " ";
             for (int i = 0; i < words.length; i++) {
                 newWords[i + 1] = words[i];
             }
-            newWords[newWords.length] = " ";
+            newWords[newWords.length - 1] = " ";
         } else {
             newWords = words;
         }
