@@ -35,7 +35,8 @@ public class NGram {
 
         //input
         //FileInputFormat.setInputPathFilter(job, TXTFilter.class);
-        FileInputFormat.addInputPaths(job, args[args.length - 2]);
+//        FileInputFormat.addInputPaths(job, args[args.length - 2]);
+        FileInputFormat.setInputPaths(job, new Path(args[args.length - 2]));
         job.setInputFormatClass(MultipleBooksInputFormat.class);
 
         //output
@@ -44,6 +45,6 @@ public class NGram {
         job.setOutputFormatClass(TextOutputFormat.class);
         job.setOutputKeyClass(TextArrayWritable.class);
         job.setOutputValueClass(IntArrayWritable.class);
-        job.waitForCompletion(true);
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
