@@ -36,7 +36,7 @@ public class NGramReducer extends Reducer<TextYearWritable, IntArrayWritable, Te
         IntArrayWritable outputValue = new IntArrayWritable(new IntWritable[]{ngramCount, volumeCount});
 
         //unigram or bigram
-        int ngramOption = key.getText().toString().trim().split("\t").length;
+        int ngramOption = key.getText().toString().trim().split("\\t").length;
 
 //        System.out.println("reduce ket is : " + outputKey);
         if (ngramOption == 1) {

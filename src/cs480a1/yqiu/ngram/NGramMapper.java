@@ -45,8 +45,9 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 //        String regex = ".*[a-zA-Z0-9]+.*";
 
         for (String word : words) {
-            if (word.matches(".*[a-zA-Z0-9].*")) {
+            if (word.matches("^.*[a-zA-Z0-9].*$")) {
                 newWordsArray.add(word);
+
             }
         }
 
@@ -72,7 +73,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
             }
 
             //replace all non-alphanumeric char
-            nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9\\s\\t]", "").toLowerCase();
+            nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9\\t]", "").toLowerCase();
 
             //key = nGram phrase_filename + release year
             String outStr = nGramStr.concat("_").concat(filename.toString());

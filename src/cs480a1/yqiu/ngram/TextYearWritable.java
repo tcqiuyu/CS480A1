@@ -22,11 +22,7 @@ public class TextYearWritable implements WritableComparable<TextYearWritable> {
     }
 
     public TextYearWritable(Text text, IntWritable year) {
-//        texts = new Text[strings.length];
-//        for (int i = 0; i < strings.length; i++) {
-//            texts[i] = new Text(strings[i]);
-//        }
-//        set(texts);
+
         this.text = text;
         this.year = year;
     }
