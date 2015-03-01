@@ -30,8 +30,9 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
     private IntWritable releaseYear;
     private String filename;
-    private Text currentLine = new Text();
-    private Text currentSentence = new Text("");
+    private Text currentLine = new Text("");
+    private String currentSentenceStr = "";
+    private String remainLineStr = "";
 
     @Override
     public void initialize(InputSplit inputSplit, TaskAttemptContext context) throws IOException, InterruptedException {
@@ -129,22 +130,37 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         }
 
         //TODO:simple split by ".". Does not include abbr. case
-        if (currentSentence.find(".") != -1) {
+
+        int remainLinePeriodPos = remainLineStr.indexOf(".");
+
+        if (remainLinePeriodPos != -1) {//if remaining line does not has period, need to read a new line
             boolean flag = true;
-            while (flag && (0 != lineReader.readLine(currentLine))) {
-                if (currentLine.find(".") != -1) {//if current line has period
+            while (flag) {
+
+                lineReader.readLine(currentLine);
+                String currentLineStr = currentLine.toString();
+                int periodPos = currentLineStr.indexOf(".");//period position
+
+                if (periodPos != -1) {//if current line has period
                     flag = false;
-                    int periodPos = currentLine.find(".");//period position
-                    currentSentence.append(currentLine.getBytes(), 0, periodPos);//concat with current sentence
-                    this.key = new TextYearWritable(currentSentence, releaseYear);
+                    String strToConcat = currentLineStr.substring(0, periodPos);
+                    currentSentenceStr = currentSentenceStr.concat(strToConcat);
+                    remainLineStr = currentLineStr.substring(periodPos + 1).trim();
+                    this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
+                    currentSentenceStr = "";//reset sentence
                     return true;
                 } else {//if current line does not have period, concat whole line to current sentence
-                    currentSentence.append(currentLine.getBytes(), 0, currentLine.getLength());
+                    currentSentenceStr = currentSentenceStr.concat(currentLine.toString());
                 }
             }
+        } else {//remaining line has period. (especially for handling the case that many short sentences with in a line) Don't need to read a new line here
+            currentSentenceStr = currentSentenceStr.concat(remainLineStr.substring(0, remainLinePeriodPos));
+            remainLineStr = remainLineStr.substring(remainLinePeriodPos + 1).trim();
+            this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
+            return true;
         }
 
-        return false;
+        return true;
     }
 
 
