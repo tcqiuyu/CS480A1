@@ -165,7 +165,11 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             boolean flag = true;
             while (flag) {
 
-                currentPos += lineReader.readLine(currentLine);
+                int readBytes = lineReader.readLine(currentLine);
+                if (readBytes == 0) {
+                    return false;
+                }
+                currentPos += readBytes;
                 String currentLineStr = currentLine.toString();
                 int periodPos = currentLineStr.indexOf(".");//period position
 
