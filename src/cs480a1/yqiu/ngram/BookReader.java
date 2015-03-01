@@ -125,12 +125,16 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (currentPos >= end) {
-            return false;
+//            return false;
+            throw (new IOException(key.toString()));
+
         }
 
 
         if (currentLine.toString().startsWith("End of the Project Gutenberg")) {
-            return false;
+//            return false;
+            throw (new IOException(key.toString()));
+
         }
 
         //TODO:simple split by ".". Does not include abbr. case
