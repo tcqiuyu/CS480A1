@@ -108,11 +108,12 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         if (lineString.startsWith("Release Date") || startWithMonths(lineString)) {//e.g. October, 1998 or Release Date: July, 1991 or Release Date: August 11, 2004 [EBook #46]
 //            String[] releaseDateString = lineString.split(" ");
             int commaPos = lineString.indexOf(",");
-            String releaseYearStr = lineString.substring(commaPos + 2, commaPos + 6);
+            String releaseYearStr;
             int year;
             try {
+                releaseYearStr = lineString.substring(commaPos + 2, commaPos + 6);
                 year = Integer.parseInt(releaseYearStr);
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 hasDate = false;
                 return false;
             }
