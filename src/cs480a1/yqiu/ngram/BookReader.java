@@ -38,6 +38,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
 
     private boolean hasDate = true;//for the case that some books don't have release date
+    private boolean hasStart = true;
 
     public BookReader(CombineFileSplit combineFileSplit) {
         this.files = combineFileSplit;
@@ -79,7 +80,13 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
         //get book start line
         while (!bookStart(currentLine)) {
+            int readBytes = lineReader.readLine(currentLine);
+            if (readBytes == 0) {
+                hasStart = false;
+                return;
+            }
             start += lineReader.readLine(currentLine);
+
         }
         currentPos = start;
     }
@@ -141,10 +148,10 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             return false;
         }
 
-        if (currentPos >= end || !hasDate) {
+        if (currentPos >= end || !hasDate || !hasStart) {
 
 //            return false;
-            throw (new IOException(filename +":"+ hasDate));
+            throw (new IOException(filename + ":" + hasDate + ":" + hasStart));
         }
 
 
