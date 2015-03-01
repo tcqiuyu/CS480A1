@@ -27,14 +27,14 @@ public class NGram {
         job.setReducerClass(NGramReducer.class);
 
         job.getConfiguration().setLong("mapreduce.input.fileinputformat.split.maxsize", (long) (64 * 1024 * 1024));
-
+        job.getConfiguration().setLong("mapreduce.input.fileinputformat.split.minsize.per.node", 0);
         MultipleOutputs.addNamedOutput(job, "Unigram",
                 TextOutputFormat.class, TextYearWritable.class, IntArrayWritable.class);
         MultipleOutputs.addNamedOutput(job, "Bigram",
                 TextOutputFormat.class, TextYearWritable.class, IntArrayWritable.class);
 
         //input
-        //FileInputFormat.setInputPathFilter(job, TXTFilter.class);
+//        FileInputFormat.setInputPathFilter(job, TXTFilter.class);
 //        FileInputFormat.addInputPaths(job, args[args.length - 2]);
         FileInputFormat.setInputPaths(job, new Path(args[args.length - 2]));
         job.setInputFormatClass(MultipleBooksInputFormat.class);
