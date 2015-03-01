@@ -138,7 +138,9 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (currentPos >= end || !hasDate) {
-            return false;
+
+//            return false;
+            throw(new IOException(filename));
         }
 
 
