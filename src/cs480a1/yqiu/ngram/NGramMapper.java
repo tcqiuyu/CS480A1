@@ -58,7 +58,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 
             //replace all non-alphanumeric char
             if (nGramStr != null) {
-                nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9 ]", "").toLowerCase();
+                nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9\\s\\t]", "").toLowerCase();
             }
 
             //key = nGram phrase_filename + release year
