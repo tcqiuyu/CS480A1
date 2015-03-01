@@ -16,7 +16,7 @@ public class NGramCombiner extends Reducer<TextYearWritable, IntArrayWritable, T
     public void reduce(TextYearWritable key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
 
         //key no need contain filename here. Remove it.
-        String nGramStr = key.getText().toString().split("_")[0];
+        String nGramStr = key.getText().toString();
         Text nGram = new Text(nGramStr);
 //        throw (new IOException(key.toString()));
 

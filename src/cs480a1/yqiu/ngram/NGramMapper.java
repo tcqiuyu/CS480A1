@@ -74,9 +74,9 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
             //replace all non-alphanumeric char
             nGramStr = nGramStr.trim().replaceAll("[^a-zA-Z0-9\\t]", "").toLowerCase();
 
-            //key = nGram phrase_filename + release year
-            String outStr = nGramStr.concat("_").concat(filename.toString());
-            Text out = new Text(outStr);
+            //key = nGram phrase + release year
+//            String outStr = nGramStr.concat("_").concat(filename.toString());
+            Text out = new Text(nGramStr);
             TextYearWritable key = new TextYearWritable(out, releaseYear);
             //value = total count + volume occurance count
             IntWritable[] val = new IntWritable[]{new IntWritable(1), new IntWritable(1)};
