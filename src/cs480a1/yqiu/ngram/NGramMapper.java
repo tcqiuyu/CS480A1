@@ -26,11 +26,13 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         words = currentSentence.split("\\s");
 
         IntWritable[] test = {new IntWritable(1), new IntWritable(1)};
-//        context.write(key, new IntArrayWritable(test));
+        context.write(key, new IntArrayWritable(test));
 //        throw (new IOException());
-        doNGram(1, words);
-        doNGram(2, words);
-        throw (new IOException(key.toString()));
+//        doNGram(1, words);
+//        doNGram(2, words);
+        if (value.toString().contains("Chapter 17 WHEN WENDY GREW UP")) {
+            throw (new IOException(value.toString()));
+        }
     }
 
     private void doNGram(int n, String[] words) throws IOException, InterruptedException {
@@ -50,7 +52,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
             //construct n gram: e.g. word1 + "\t" + word2. (no "/t" at end).
             if (n == 2) {
 //                for (int j = 1; j < n; j++) {
-                    nGramStr = nGramStr + "\t" + newWords[i + 1];
+                nGramStr = nGramStr + "\t" + newWords[i + 1];
 //                }
             }
 
@@ -68,6 +70,8 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
             IntWritable[] val = new IntWritable[]{new IntWritable(1), new IntWritable(1)};
             IntArrayWritable value = new IntArrayWritable(val);
             context.write(key, value);
+            throw (new IOException(key.toString()));
+
         }
 
 

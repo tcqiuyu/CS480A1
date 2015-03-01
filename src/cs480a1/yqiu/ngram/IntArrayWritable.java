@@ -32,11 +32,11 @@ public class IntArrayWritable implements WritableComparable {
         if (!(o instanceof IntArrayWritable)) {
             throw new ClassCastException();
         }
-        IntWritable[] newValues = (IntWritable[]) o;
-
+        IntArrayWritable other = (IntArrayWritable) o;
+        IntWritable[] otherArray = other.get();
         int compareToVal = -1;
         for (int i = 0; i < this.values.length; ++i) {
-            compareToVal = newValues[i].compareTo(this.values[i]);
+            compareToVal = otherArray[i].compareTo(this.values[i]);
         }
         return compareToVal;
     }

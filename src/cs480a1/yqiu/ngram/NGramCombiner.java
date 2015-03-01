@@ -18,7 +18,7 @@ public class NGramCombiner extends Reducer<TextYearWritable, IntArrayWritable, T
         //key no need contain filename here. Remove it.
 //        String nGramStr = key.getText().toString().split("_")[0];
 //        Text nGram = new Text(nGramStr);
-        throw (new IOException());
+        throw (new IOException(key.toString()));
 
         //new key = ngram + release year
 //        TextYearWritable newKey = new TextYearWritable(nGram, key.getYear());
