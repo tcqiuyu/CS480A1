@@ -19,7 +19,14 @@ public class MultipleBooksInputFormat extends CombineFileInputFormat<TextYearWri
     @Override
     public RecordReader<TextYearWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException {
 
-        return new CombineFileRecordReader<TextYearWritable, Text>((CombineFileSplit) split, context, MultipleBooksReader.class);
+        CombineFileSplit combineFileSplit = (CombineFileSplit) split;
+        CombineFileRecordReader<TextYearWritable, Text> recordReader = new CombineFileRecordReader<TextYearWritable, Text>(combineFileSplit, context, MultipleBooksReader.class);
+        try {
+            recordReader.initialize(combineFileSplit, context);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return recordReader;
     }
 
 
