@@ -27,6 +27,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 
         IntWritable[] test = {new IntWritable(1), new IntWritable(1)};
         context.write(key, new IntArrayWritable(test));
+        throw (new IOException());
 
 //        doNGram(1, words);
 //        doNGram(2, words);
