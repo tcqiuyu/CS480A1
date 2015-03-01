@@ -21,7 +21,9 @@ public class MultipleBooksReader extends RecordReader<TextYearWritable, Text> {
     public MultipleBooksReader(CombineFileSplit split, TaskAttemptContext context, Integer index) throws Exception {
         super();
         this.index = index;
-        throw (new IOException(index.toString()));
+        if (index == 1) {
+            throw (new IOException(index.toString()));
+        }
     }
 
     @Override
