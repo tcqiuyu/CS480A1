@@ -30,9 +30,9 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 //        throw (new IOException());
 //        doNGram(1, words);
 //        doNGram(2, words);
-//        if (value.toString().contains("Chapter 17 WHEN WENDY GREW UP")) {
-//            throw (new IOException(value.toString()));
-//        }
+        if (key.getText().toString().contains("How CAN I have done that?")) {
+            throw (new IOException(value.toString()));
+        }
     }
 
     private void doNGram(int n, String[] words) throws IOException, InterruptedException {

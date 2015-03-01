@@ -157,8 +157,8 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             remainLineStr = remainLineStr.substring(remainLinePeriodPos + 1).trim();
             this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
             currentSentenceStr="";//reset sentence
-                throw (new IOException(key.toString()));
-//            return true;
+//                throw (new IOException(key.toString()));
+            return true;
         }
 
         return true;
