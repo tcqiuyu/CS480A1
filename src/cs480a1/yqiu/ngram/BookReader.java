@@ -70,12 +70,12 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
     private void prepareToScanBook() throws IOException {
         //get release year
-        while (!containReleaseDate(currentLine)) {
+        while (!containReleaseDate(currentLine) && hasDate) {
             start += lineReader.readLine(currentLine);
         }
 
         //get book start line
-        while (!bookStart(currentLine) && hasDate) {
+        while (!bookStart(currentLine)) {
             start += lineReader.readLine(currentLine);
         }
         currentPos = start;
