@@ -100,7 +100,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             try {
                 year = Integer.parseInt(releaseYearStr);
             } catch(NumberFormatException e){
-                throw(new IOException(lineString));
+                return false;
             }
 //            String[] valueStr = new String[]{releaseYearStr, filename};
 //            value = new TextYearWritable(valueStr);valueStr
