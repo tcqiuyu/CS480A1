@@ -50,17 +50,17 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         for (int i = 0; i < newWords.length + 1 - n; i++) {
             String nGramStr = newWords[i];
             //construct n gram: e.g. word1 + "\t" + word2. (no "/t" at end).
-            if (newWords[i].equals("")) {
+            if (!newWords[i].contains("[a-zA-z0-9]")) {
                 i++;
                 continue;
             }
             if (n == 2) {
 //                for (int j = 1; j < n; j++) {
-                if (newWords[i + 1].equals("")) {
-                    nGramStr = nGramStr + "\t" + newWords[i + 2];
-                } else {
-                    nGramStr = nGramStr + "\t" + newWords[i + 1];
+                int tmp = 1;
+                while (!newWords[i + tmp].contains("[a-zA-z0-9]")) {
+                    tmp++;
                 }
+                nGramStr = nGramStr + "\t" + newWords[tmp];
             }
 
             //replace all non-alphanumeric char
