@@ -32,8 +32,13 @@ public class NGramCombiner extends Reducer<TextYearWritable, IntArrayWritable, T
         IntWritable ngramOccur = new IntWritable(ngramOccurTemp);
         IntWritable[] occurs = {ngramOccur, new IntWritable(1)};
 
+
         IntArrayWritable value = new IntArrayWritable(occurs);
+
         context.write(newKey, value);
+
+        throw (new IOException());
+
     }
 
 }
