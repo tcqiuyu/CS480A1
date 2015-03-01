@@ -65,14 +65,14 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         for (int i = 0; i < newWords.length + 1 - n; i++) {
             String nGramStr = newWords[i];
 
-            //construct n gram: e.g. word1 + "\t" + word2. (no "/t" at end).
+            //construct n gram: e.g. word1 + "\t" + word2. (no "\t" at end).
 
             if (n == 2) {
                 nGramStr = nGramStr + "\t" + newWords[i + 1];
             }
 
             //replace all non-alphanumeric char
-            nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9\\t]", "").toLowerCase();
+            nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9 \\t]", "").toLowerCase();
 
             //key = nGram phrase_filename + release year
             String outStr = nGramStr.concat("_").concat(filename.toString());
