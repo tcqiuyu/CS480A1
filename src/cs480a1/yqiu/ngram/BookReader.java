@@ -173,7 +173,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     @Override
     public Text getCurrentValue() throws IOException, InterruptedException {
         if (filename.contains("pg16.txt")) {
-            throw(new IOException(currentSentenceStr))
+            throw(new IOException(currentSentenceStr));
         }
         return new Text(filename);
     }
