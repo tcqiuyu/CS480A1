@@ -34,7 +34,7 @@ public class NGram {
                 TextOutputFormat.class, TextYearWritable.class, IntArrayWritable.class);
 
         //input
-//        FileInputFormat.setInputPathFilter(job, TXTFilter.class);
+        FileInputFormat.setInputPathFilter(job, TXTFilter.class);
 //        FileInputFormat.addInputPaths(job, args[args.length - 2]);
         FileInputFormat.setInputPaths(job, new Path(args[args.length - 2]));
         FileInputFormat.setInputDirRecursive(job, true);
