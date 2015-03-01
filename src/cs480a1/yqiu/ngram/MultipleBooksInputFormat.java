@@ -13,13 +13,13 @@ import java.io.IOException;
 /**
  * Created by Qiu on 2/25/2015.
  */
-public class MultipleBooksInputFormat extends CombineFileInputFormat<Text, TextArrayWritable> {
+public class MultipleBooksInputFormat extends CombineFileInputFormat<TextYearWritable, Text> {
 
 
     @Override
-    public RecordReader<Text, TextArrayWritable> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException {
+    public RecordReader<TextYearWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException {
 
-        return new CombineFileRecordReader<Text, TextArrayWritable>((CombineFileSplit) split, context, MultipleBooksReader.class);
+        return new CombineFileRecordReader<TextYearWritable, Text>((CombineFileSplit) split, context, MultipleBooksReader.class);
     }
 
 

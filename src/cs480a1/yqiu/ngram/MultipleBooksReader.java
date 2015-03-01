@@ -12,12 +12,12 @@ import java.io.IOException;
 /**
  * Created by Qiu on 2/25/2015.
  */
-public class MultipleBooksReader extends RecordReader<Text, TextArrayWritable> {
+public class MultipleBooksReader extends RecordReader<TextYearWritable, Text> {
 
     private int index;
     private BookReader bookReader;
 
-    public MultipleBooksReader(CombineFileSplit split, TaskAttemptContext context, Integer index) {
+    public MultipleBooksReader(CombineFileSplit split, TaskAttemptContext context, Integer index) throws Exception {
         this.index = index;
         this.bookReader = new BookReader();
     }
@@ -29,7 +29,6 @@ public class MultipleBooksReader extends RecordReader<Text, TextArrayWritable> {
                 combineFileSplit.getLength(), combineFileSplit.getLocations());
 
         bookReader.initialize(fileSplit, context);
-//        bookReader.setFileStartLoc(startsLoc);
     }
 
     @Override
@@ -38,12 +37,12 @@ public class MultipleBooksReader extends RecordReader<Text, TextArrayWritable> {
     }
 
     @Override
-    public Text getCurrentKey() throws IOException, InterruptedException {
+    public TextYearWritable getCurrentKey() throws IOException, InterruptedException {
         return bookReader.getCurrentKey();
     }
 
     @Override
-    public TextArrayWritable getCurrentValue() throws IOException, InterruptedException {
+    public Text getCurrentValue() throws IOException, InterruptedException {
         return bookReader.getCurrentValue();
     }
 

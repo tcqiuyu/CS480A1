@@ -9,41 +9,42 @@ import java.io.IOException;
 /**
  * Created by Qiu on 2/25/2015.
  */
-public class NGramMapper extends Mapper<Text, TextArrayWritable, TextArrayWritable, IntArrayWritable> {
+public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable, IntArrayWritable> {
 
     private Context context;
-    private String releaseYearStr;
+    private IntWritable releaseYear;
+    private Text filename;
 
     @Override
-    public void map(Text key, TextArrayWritable value, Context context) throws IOException, InterruptedException {
+    public void map(TextYearWritable key, Text value, Context context) throws IOException, InterruptedException {
         this.context = context;
+        this.filename = value;
 
-        String currentSentence = key.toString();
-        releaseYearStr = value.toString();
-
+        String currentSentence = key.getText().toString();
+        releaseYear = key.getYear();
         String[] words;
         words = currentSentence.split("\\s");
 
-        doNGram(0, words);
         doNGram(1, words);
+        doNGram(2, words);
 
     }
 
     private void doNGram(int n, String[] words) throws IOException, InterruptedException {
         String[] newWords;
-        if (n != 1) {
+        if (n != 1) {//if not unigram, add space at sentence start and end
             newWords = new String[words.length + 1];
             newWords[0] = " ";
-            for (int i = 0; i < words.length; i++) {
-                newWords[i + 1] = words[i];
-            }
+            System.arraycopy(words, 0, newWords, 1, words.length);
             newWords[newWords.length - 1] = " ";
         } else {
             newWords = words;
         }
 
+
+        //construct n gram: e.g. word1 + "/t" + word2. (no "/t" at end).
         for (int i = 0; i < newWords.length; i++) {
-            String nGramStr = null;
+            String nGramStr = newWords[i];
             if (n != 1) {
                 for (int j = 1; j < n; j++) {
                     nGramStr = nGramStr + "/t" + newWords[i + j];
@@ -53,10 +54,13 @@ public class NGramMapper extends Mapper<Text, TextArrayWritable, TextArrayWritab
             if (nGramStr != null) {
                 nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9 ]", "");
             }
-            //key = nGram + release year + filename
-            String[] keyStr = new String[]{nGramStr, releaseYearStr, String.valueOf(n)};
-            System.out.println("Mapped key is : " + keyStr);
-            TextArrayWritable key = new TextArrayWritable(keyStr);
+
+            //key = nGram phrase_filename + release year
+            assert nGramStr != null;
+            String outStr = nGramStr.concat("_").concat(filename.toString());
+            Text out = new Text(outStr);
+            TextYearWritable key = new TextYearWritable(out, releaseYear);
+            //value = total count + volume occurance count
             IntWritable[] val = new IntWritable[]{new IntWritable(1), new IntWritable(1)};
             IntArrayWritable value = new IntArrayWritable(val);
             context.write(key, value);

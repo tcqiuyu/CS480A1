@@ -1,6 +1,7 @@
 package cs480a1.yqiu.ngram;
 
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
@@ -9,20 +10,21 @@ import java.io.IOException;
 /**
  * Created by Qiu on 2/25/2015.
  */
-public class NGramReducer extends Reducer<TextArrayWritable, IntArrayWritable, TextArrayWritable, IntArrayWritable> {
+public class NGramReducer extends Reducer<TextYearWritable, IntArrayWritable, TextYearWritable, IntArrayWritable> {
 
-    private MultipleOutputs<TextArrayWritable, IntArrayWritable> multipleOutputs;
+    private MultipleOutputs<TextYearWritable, IntArrayWritable> multipleOutputs;
 
     @Override
     public void setup(Context context) {
-        multipleOutputs = new MultipleOutputs<TextArrayWritable, IntArrayWritable>(context);
+        multipleOutputs = new MultipleOutputs<TextYearWritable, IntArrayWritable>(context);
     }
 
     @Override
-    public void reduce(TextArrayWritable key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
+    public void reduce(TextYearWritable key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
         int ngramOccur = 0;
         int volumeOccur = 0;
 
+        //get accumulated count
         for (IntArrayWritable val : values) {
             ngramOccur += val.get()[0].get();
             volumeOccur += val.get()[1].get();
@@ -33,16 +35,14 @@ public class NGramReducer extends Reducer<TextArrayWritable, IntArrayWritable, T
 
         IntArrayWritable outputValue = new IntArrayWritable(new IntWritable[]{ngramCount, volumeCount});
 
-        String ngramStr = key.get()[0].toString();
-        String yearStr = key.get()[1].toString();
+        //unigram or bigram
+        int ngramOption = key.getText().toString().split(" ").length;
 
-        TextArrayWritable outputKey = new TextArrayWritable(new String[]{ngramStr, yearStr});
-
-        System.out.println("reduce ket is : " + outputKey);
-        if (key.get()[2].toString().matches("1")) {
-            multipleOutputs.write(outputKey, outputValue, "Unigram");
-        } else if (key.get()[2].toString().matches("2")) {
-            multipleOutputs.write(outputKey, outputValue, "Bigram");
+//        System.out.println("reduce ket is : " + outputKey);
+        if (ngramOption == 1) {
+            multipleOutputs.write(key, outputValue, "Unigram");
+        } else if (ngramOption == 2) {
+            multipleOutputs.write(key, outputValue, "Bigram");
         }
     }
 

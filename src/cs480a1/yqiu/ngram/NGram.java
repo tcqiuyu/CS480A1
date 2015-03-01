@@ -29,9 +29,9 @@ public class NGram {
         job.getConfiguration().setLong("mapreduce.input.fileinputformat.split.maxsize", (long) (64 * 1024 * 1024));
 
         MultipleOutputs.addNamedOutput(job, "Unigram",
-                TextOutputFormat.class, TextArrayWritable.class, IntArrayWritable.class);
+                TextOutputFormat.class, TextYearWritable.class, IntArrayWritable.class);
         MultipleOutputs.addNamedOutput(job, "Bigram",
-                TextOutputFormat.class, TextArrayWritable.class, IntArrayWritable.class);
+                TextOutputFormat.class, TextYearWritable.class, IntArrayWritable.class);
 
         //input
         //FileInputFormat.setInputPathFilter(job, TXTFilter.class);
@@ -43,7 +43,7 @@ public class NGram {
         FileOutputFormat.setOutputPath(job, new Path(args[args.length - 1]));
 
         job.setOutputFormatClass(TextOutputFormat.class);
-        job.setOutputKeyClass(TextArrayWritable.class);
+        job.setOutputKeyClass(TextYearWritable.class);
         job.setOutputValueClass(IntArrayWritable.class);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }

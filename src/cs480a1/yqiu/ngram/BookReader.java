@@ -4,6 +4,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -15,22 +16,22 @@ import java.io.IOException;
 
 /**
  * Created by Qiu on 2/26/2015.
+ * Key is Text+Release Year, value is filename
  */
-public class BookReader extends RecordReader<Text, TextArrayWritable> {
+public class BookReader extends RecordReader<TextYearWritable, Text> {
 
     private LineReader lineReader;
-    private Text key = new Text();
-    private TextArrayWritable value;
+    private TextYearWritable key = new TextYearWritable();
+    private Text value;
 
     private long start;
     private long end;
     private long currentPos;
 
+    private IntWritable releaseYear;
     private String filename;
     private Text currentLine = new Text();
     private Text currentSentence = new Text("");
-
-    private FSDataInputStream inputStream;
 
     @Override
     public void initialize(InputSplit inputSplit, TaskAttemptContext context) throws IOException, InterruptedException {
@@ -39,7 +40,7 @@ public class BookReader extends RecordReader<Text, TextArrayWritable> {
         Path path = split.getPath();
         filename = path.getName();
         FileSystem fileSystem = path.getFileSystem(configuration);
-        inputStream = fileSystem.open(path);
+        FSDataInputStream inputStream = fileSystem.open(path);
         lineReader = new LineReader(inputStream, configuration);
         //initial start point and end point
         start = split.getStart();
@@ -88,8 +89,11 @@ public class BookReader extends RecordReader<Text, TextArrayWritable> {
         if (lineString.startsWith("Release Date") || startWithMonths(lineString)) {//e.g. October, 1998 or Release Date: July, 1991
             String[] releaseDateString = lineString.split(" ");
             String releaseYearStr = releaseDateString[releaseDateString.length - 1];
-            String[] valueStr = new String[]{releaseYearStr, filename};
-            value = new TextArrayWritable(valueStr);
+            int year = Integer.parseInt(releaseYearStr);
+//            String[] valueStr = new String[]{releaseYearStr, filename};
+//            value = new TextYearWritable(valueStr);valueStr
+            releaseYear = new IntWritable(year);
+
             return true;
         }
         return false;
@@ -131,7 +135,7 @@ public class BookReader extends RecordReader<Text, TextArrayWritable> {
                     flag = false;
                     int periodPos = currentLine.find(".");//period position
                     currentSentence.append(currentLine.getBytes(), 0, periodPos);//concat with current sentence
-                    this.key = currentSentence;
+                    this.key = new TextYearWritable(currentSentence, releaseYear);
                     return true;
                 } else {//if current line does not have period, concat whole line to current sentence
                     currentSentence.append(currentLine.getBytes(), 0, currentLine.getLength());
@@ -144,13 +148,13 @@ public class BookReader extends RecordReader<Text, TextArrayWritable> {
 
 
     @Override
-    public Text getCurrentKey() throws IOException, InterruptedException {
+    public TextYearWritable getCurrentKey() throws IOException, InterruptedException {
         return key;
     }
 
     @Override
-    public TextArrayWritable getCurrentValue() throws IOException, InterruptedException {
-        return value;
+    public Text getCurrentValue() throws IOException, InterruptedException {
+        return new Text(filename);
     }
 
     @Override
