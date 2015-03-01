@@ -50,7 +50,8 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
             }
         }
 
-        String[] newWords = (String[]) newWordsArray.toArray();
+        int wordCount = newWordsArray.size();
+        String[] newWords = (String[]) newWordsArray.toArray(new String[wordCount]);
 
         if (n != 1) {//if not unigram, add space at sentence start and end
             newWords = new String[words.length + 1];
