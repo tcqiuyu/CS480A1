@@ -145,7 +145,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                 String currentLineStr = currentLine.toString();
                 int periodPos = currentLineStr.indexOf(".");//period position
 
-                if (currentLine.toString().startsWith("End of the Project Gutenberg")) {
+                if (currentLine.toString().contains("End of the Project Gutenberg")) {
 //            return false;
                     throw (new IOException(currentLine.toString()));//unreachable
 
