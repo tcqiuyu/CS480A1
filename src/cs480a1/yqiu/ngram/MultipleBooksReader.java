@@ -22,9 +22,9 @@ public class MultipleBooksReader extends RecordReader<TextYearWritable, Text> {
         super();
         this.index = index;
         this.bookReader = new BookReader(split);
-        if (index == 1) {
-            throw (new IOException(index.toString()));
-        }
+//        if (index == 1) {
+//            throw (new IOException(index.toString()));
+//        }
     }
 
     @Override
