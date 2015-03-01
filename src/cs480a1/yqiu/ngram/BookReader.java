@@ -149,9 +149,8 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         }
 
         if (currentPos >= end || !hasDate || !hasStart) {
-
-//            return false;
-            throw (new IOException(filename + ":" + hasDate + ":" + hasStart));
+            return false;
+//            throw (new IOException(filename + ":" + hasDate + ":" + hasStart));
         }
 
 
