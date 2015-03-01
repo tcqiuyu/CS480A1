@@ -83,7 +83,6 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         return false;
     }
 
-
     private boolean containReleaseDate(Text text) {
         String lineString = text.toString();
         //two cases:
@@ -133,7 +132,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
         int remainLinePeriodPos = remainLineStr.indexOf(".");
 
-        if (remainLinePeriodPos == -1) {//if remaining line does not has period, need to read a new line
+        if (remainLinePeriodPos == -1) {//if remaining line does not have period, need to read a new line
             boolean flag = true;
             while (flag) {
 
@@ -157,7 +156,9 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             currentSentenceStr = currentSentenceStr.concat(remainLineStr.substring(0, remainLinePeriodPos));
             remainLineStr = remainLineStr.substring(remainLinePeriodPos + 1).trim();
             this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
-            return true;
+            currentSentenceStr="";//reset sentence
+                throw (new IOException(key.toString()));
+//            return true;
         }
 
         return true;
