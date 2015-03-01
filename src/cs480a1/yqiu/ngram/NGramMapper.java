@@ -25,7 +25,9 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         String[] words;
         words = currentSentence.split("\\s");
 
-        doNGram(1, words);
+        IntWritable[] test = {new IntWritable(1), new IntWritable(1)};
+        context.write(key, new IntArrayWritable(test));
+//        doNGram(1, words);
 //        doNGram(2, words);
 
     }
