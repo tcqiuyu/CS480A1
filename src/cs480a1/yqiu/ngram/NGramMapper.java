@@ -43,7 +43,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 
 
         //construct n gram: e.g. word1 + "/t" + word2. (no "/t" at end).
-        for (int i = 0; i < newWords.length; i++) {
+        for (int i = 0; i < newWords.length + 1 - n; i++) {
             String nGramStr = newWords[i];
             if (n != 1) {
                 for (int j = 1; j < n; j++) {
