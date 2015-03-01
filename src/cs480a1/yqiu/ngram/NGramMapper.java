@@ -5,6 +5,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -37,7 +38,20 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
     }
 
     private void doNGram(int n, String[] words) throws IOException, InterruptedException {
-        String[] newWords;
+
+
+        ArrayList<String> newWordsArray = new ArrayList<String>();
+
+        String regex = ".*[a-zA-Z0-9]+.*";
+
+        for (String word : words) {
+            if (Pattern.compile(regex).matcher(word).find()) {
+                newWordsArray.add(word);
+            }
+        }
+
+        String[] newWords = (String[]) newWordsArray.toArray();
+
         if (n != 1) {//if not unigram, add space at sentence start and end
             newWords = new String[words.length + 1];
             newWords[0] = " ";
@@ -50,20 +64,13 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 
         for (int i = 0; i < newWords.length + 1 - n; i++) {
             String nGramStr = newWords[i];
-            String regex =".*[a-zA-Z]+.*";
+
 
             //construct n gram: e.g. word1 + "\t" + word2. (no "/t" at end).
-            if (!Pattern.compile(regex).matcher(nGramStr).find()) {
-                i++;
-                continue;
-            }
+
             if (n == 2) {
-//                for (int j = 1; j < n; j++) {
-                int tmp = 1;
-                while (!Pattern.compile(regex).matcher(newWords[n + tmp]).find()) {
-                    tmp++;
-                }
-                nGramStr = nGramStr + "\t" + newWords[tmp];
+
+                nGramStr = nGramStr + "\t" + newWords[i + 1];
             }
 
             //replace all non-alphanumeric char
