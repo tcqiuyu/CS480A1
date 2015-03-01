@@ -89,14 +89,19 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         return false;
     }
 
-    private boolean containReleaseDate(Text text) {
+    private boolean containReleaseDate(Text text) throws IOException {
         String lineString = text.toString();
         //two cases:
         if (lineString.startsWith("Release Date") || startWithMonths(lineString)) {//e.g. October, 1998 or Release Date: July, 1991 or Release Date: August 11, 2004 [EBook #46]
 //            String[] releaseDateString = lineString.split(" ");
             int commaPos = lineString.indexOf(",");
             String releaseYearStr = lineString.substring(commaPos + 2, commaPos + 6);
-            int year = Integer.parseInt(releaseYearStr);
+            int year;
+            try {
+                year = Integer.parseInt(releaseYearStr);
+            } catch(NumberFormatException e){
+                throw(new IOException(lineString));
+            }
 //            String[] valueStr = new String[]{releaseYearStr, filename};
 //            value = new TextYearWritable(valueStr);valueStr
             releaseYear = new IntWritable(year);
