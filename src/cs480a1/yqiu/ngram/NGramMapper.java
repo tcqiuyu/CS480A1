@@ -26,7 +26,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         words = currentSentence.split("\\s");
 
         doNGram(1, words);
-        doNGram(2, words);
+//        doNGram(2, words);
 
     }
 
