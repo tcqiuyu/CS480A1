@@ -5,6 +5,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * Created by Qiu on 2/25/2015.
@@ -49,27 +50,26 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 
         for (int i = 0; i < newWords.length + 1 - n; i++) {
             String nGramStr = newWords[i];
+            String regex =".*[a-zA-Z]+.*";
+
             //construct n gram: e.g. word1 + "\t" + word2. (no "/t" at end).
-            if (!newWords[i].contains("[a-zA-z0-9]")) {
+            if (!Pattern.compile(regex).matcher(nGramStr).find()) {
                 i++;
                 continue;
             }
             if (n == 2) {
 //                for (int j = 1; j < n; j++) {
                 int tmp = 1;
-                while (!newWords[i + tmp].contains("[a-zA-z0-9]")) {
+                while (!Pattern.compile(regex).matcher(newWords[n + tmp]).find()) {
                     tmp++;
                 }
                 nGramStr = nGramStr + "\t" + newWords[tmp];
             }
 
             //replace all non-alphanumeric char
-            if (nGramStr != null) {
-                nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9\\s\\t]", "").toLowerCase();
-            }
+            nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9\\s\\t]", "").toLowerCase();
 
             //key = nGram phrase_filename + release year
-            assert nGramStr != null;
             String outStr = nGramStr.concat("_").concat(filename.toString());
             Text out = new Text(outStr);
             TextYearWritable key = new TextYearWritable(out, releaseYear);
