@@ -137,10 +137,14 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
+        if (!filename.endsWith(".txt")) {
+            return false;
+        }
+
         if (currentPos >= end || !hasDate) {
 
 //            return false;
-            throw(new IOException(filename));
+            throw (new IOException(filename +":"+ hasDate));
         }
 
 
