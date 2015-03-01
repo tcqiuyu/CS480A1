@@ -42,10 +42,10 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 
         ArrayList<String> newWordsArray = new ArrayList<String>();
 
-        String regex = ".*[a-zA-Z0-9]+.*";
+//        String regex = ".*[a-zA-Z0-9]+.*";
 
         for (String word : words) {
-            if (Pattern.compile(regex).matcher(word).find()) {
+            if (word.matches(".*\\W.*")) {
                 newWordsArray.add(word);
             }
         }
@@ -54,12 +54,11 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         String[] newWords = (String[]) newWordsArray.toArray(new String[wordCount]);
 
         if (n != 1) {//if not unigram, add space at sentence start and end
-            newWords = new String[words.length + 1];
+            String[] tmpStr = new String[newWords.length + 1];
             newWords[0] = " ";
-            System.arraycopy(words, 0, newWords, 1, words.length);
-            newWords[newWords.length - 1] = " ";
-        } else {
-            newWords = words;
+            System.arraycopy(newWords, 0, tmpStr, 1, newWords.length);
+            tmpStr[tmpStr.length - 1] = " ";
+            newWords = tmpStr;
         }
 
 
