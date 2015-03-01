@@ -126,11 +126,8 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (currentPos >= end) {
-//            return false;
-            throw (new IOException(key.toString()));//unreachable
-
+            return false;
         }
-
 
         //TODO:simple split by ".". Does not include abbr. case
 
@@ -145,10 +142,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                 int periodPos = currentLineStr.indexOf(".");//period position
 
                 if (currentLine.toString().contains("End of the Project Gutenberg") || currentLine.toString().contains("End of Project Gutenberg")) {
-
                     return false;
-//                    throw (new IOException(currentLine.toString()));//unreachable
-
                 }
 
                 if (periodPos != -1) {//if current line has period
@@ -159,7 +153,6 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                     currentSentenceStr = currentSentenceStr.replaceAll("\\n", " ");
                     this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
                     currentSentenceStr = "";//reset sentence
-//                    return true;
                 } else {//if current line does not have period, concat whole line to current sentence
                     currentSentenceStr = currentSentenceStr.concat(currentLine.toString());
                 }
@@ -170,7 +163,6 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             currentSentenceStr = currentSentenceStr.replaceAll("\\n", " ");
             this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
             currentSentenceStr = "";//reset sentence
-//                throw (new IOException(key.toString())); <- worked
             return true;
         }
 
