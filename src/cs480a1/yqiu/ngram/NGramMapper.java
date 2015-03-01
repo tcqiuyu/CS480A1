@@ -70,7 +70,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
             IntWritable[] val = new IntWritable[]{new IntWritable(1), new IntWritable(1)};
             IntArrayWritable value = new IntArrayWritable(val);
             context.write(key, value);
-            throw (new IOException(key.toString()));
+//            throw (new IOException(key.toString()));
 
         }
 
