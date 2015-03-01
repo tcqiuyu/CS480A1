@@ -156,6 +156,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                     String strToConcat = currentLineStr.substring(0, periodPos);
                     currentSentenceStr = currentSentenceStr.concat(strToConcat);
                     remainLineStr = currentLineStr.substring(periodPos + 1).trim();
+                    currentSentenceStr = currentSentenceStr.replaceAll("\\n", " ");
                     this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
                     currentSentenceStr = "";//reset sentence
 //                    return true;
@@ -166,6 +167,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         } else {//remaining line has period. (especially for handling the case that many short sentences with in a line) Don't need to read a new line here
             currentSentenceStr = currentSentenceStr.concat(remainLineStr.substring(0, remainLinePeriodPos));
             remainLineStr = remainLineStr.substring(remainLinePeriodPos + 1).trim();
+            currentSentenceStr = currentSentenceStr.replaceAll("\\n", " ");
             this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
             currentSentenceStr = "";//reset sentence
 //                throw (new IOException(key.toString())); <- worked
