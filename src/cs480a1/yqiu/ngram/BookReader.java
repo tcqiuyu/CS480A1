@@ -126,16 +126,12 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (currentPos >= end) {
 //            return false;
-            throw (new IOException(key.toString()));
+            throw (new IOException(key.toString()));//unreachable
 
         }
 
 
-        if (currentLine.toString().startsWith("End of the Project Gutenberg")) {
-//            return false;
-            throw (new IOException(key.toString()));
 
-        }
 
         //TODO:simple split by ".". Does not include abbr. case
 
@@ -148,6 +144,12 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                 lineReader.readLine(currentLine);
                 String currentLineStr = currentLine.toString();
                 int periodPos = currentLineStr.indexOf(".");//period position
+
+                if (currentLine.toString().startsWith("End of the Project Gutenberg")||currentLine.toString().contains("THE END")) {
+//            return false;
+                    throw (new IOException(currentLine.toString()));//unreachable
+
+                }
 
                 if (periodPos != -1) {//if current line has period
                     flag = false;
@@ -166,7 +168,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             remainLineStr = remainLineStr.substring(remainLinePeriodPos + 1).trim();
             this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
             currentSentenceStr="";//reset sentence
-//                throw (new IOException(key.toString()));
+//                throw (new IOException(key.toString())); <- worked
             return true;
         }
 
