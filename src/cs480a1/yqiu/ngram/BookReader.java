@@ -36,6 +36,9 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     private String currentSentenceStr = "";
     private String remainLineStr = "";
 
+
+    private boolean hasDate = true;//for the case that some books don't have release date
+
     public BookReader(CombineFileSplit combineFileSplit) {
         this.files = combineFileSplit;
     }
@@ -72,7 +75,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         }
 
         //get book start line
-        while (!bookStart(currentLine)) {
+        while (!bookStart(currentLine) && hasDate) {
             start += lineReader.readLine(currentLine);
         }
         currentPos = start;
@@ -99,7 +102,8 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             int year;
             try {
                 year = Integer.parseInt(releaseYearStr);
-            } catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
+                hasDate = false;
                 return false;
             }
 //            String[] valueStr = new String[]{releaseYearStr, filename};
