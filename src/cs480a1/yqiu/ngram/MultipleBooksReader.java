@@ -29,6 +29,9 @@ public class MultipleBooksReader extends RecordReader<TextYearWritable, Text> {
                 combineFileSplit.getLength(), combineFileSplit.getLocations());
 
         bookReader.initialize(fileSplit, context);
+        if (index > 1) {
+            throw (new IOException(combineFileSplit.getPath(index).getName()));
+        }
     }
 
     @Override
