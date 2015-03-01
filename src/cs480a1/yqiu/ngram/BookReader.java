@@ -39,6 +39,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     public BookReader(CombineFileSplit combineFileSplit) {
         this.files = combineFileSplit;
     }
+
     @Override
     public void initialize(InputSplit inputSplit, TaskAttemptContext context) throws IOException, InterruptedException {
         FileSplit split = (FileSplit) inputSplit;
@@ -131,8 +132,6 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
         }
 
 
-
-
         //TODO:simple split by ".". Does not include abbr. case
 
         int remainLinePeriodPos = remainLineStr.indexOf(".");
@@ -145,9 +144,10 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                 String currentLineStr = currentLine.toString();
                 int periodPos = currentLineStr.indexOf(".");//period position
 
-                if (currentLine.toString().contains("End of the Project Gutenberg")) {
-//            return false;
-                    throw (new IOException(currentLine.toString()));//unreachable
+                if (currentLine.toString().contains("End of the Project Gutenberg") || currentLine.toString().contains("End of Project Gutenberg")) {
+
+                    return false;
+//                    throw (new IOException(currentLine.toString()));//unreachable
 
                 }
 
@@ -158,7 +158,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                     remainLineStr = currentLineStr.substring(periodPos + 1).trim();
                     this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
                     currentSentenceStr = "";//reset sentence
-                    return true;
+//                    return true;
                 } else {//if current line does not have period, concat whole line to current sentence
                     currentSentenceStr = currentSentenceStr.concat(currentLine.toString());
                 }
@@ -167,7 +167,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             currentSentenceStr = currentSentenceStr.concat(remainLineStr.substring(0, remainLinePeriodPos));
             remainLineStr = remainLineStr.substring(remainLinePeriodPos + 1).trim();
             this.key = new TextYearWritable(new Text(currentSentenceStr), releaseYear);
-            currentSentenceStr="";//reset sentence
+            currentSentenceStr = "";//reset sentence
 //                throw (new IOException(key.toString())); <- worked
             return true;
         }
@@ -184,7 +184,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     @Override
     public Text getCurrentValue() throws IOException, InterruptedException {
         if (filename.contains("pg16.txt")) {
-            throw(new IOException(currentSentenceStr));
+            throw (new IOException(currentSentenceStr));
         }
         return new Text(filename);
     }
