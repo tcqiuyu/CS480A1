@@ -26,10 +26,10 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         words = currentSentence.split("\\s");
 
         IntWritable[] test = {new IntWritable(1), new IntWritable(1)};
-        context.write(key, new IntArrayWritable(test));
+//        context.write(key, new IntArrayWritable(test));
 //        throw (new IOException());
-//        doNGram(1, words);
-//        doNGram(2, words);
+        doNGram(1, words);
+        doNGram(2, words);
 //        if (key.getText().toString().contains("How CAN I have done that?")) {
 //            throw (new IOException(value.toString()));
 //        }
