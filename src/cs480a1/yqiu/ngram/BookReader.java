@@ -133,7 +133,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
         int remainLinePeriodPos = remainLineStr.indexOf(".");
 
-        if (remainLinePeriodPos != -1) {//if remaining line does not has period, need to read a new line
+        if (remainLinePeriodPos == -1) {//if remaining line does not has period, need to read a new line
             boolean flag = true;
             while (flag) {
 
