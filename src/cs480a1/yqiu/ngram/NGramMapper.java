@@ -42,14 +42,15 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         }
 
 
-        //construct n gram: e.g. word1 + "/t" + word2. (no "/t" at end).
         for (int i = 0; i < newWords.length + 1 - n; i++) {
             String nGramStr = newWords[i];
-            if (n != 1) {
-                for (int j = 1; j < n; j++) {
-                    nGramStr = nGramStr + "/t" + newWords[i + j];
-                }
+            //construct n gram: e.g. word1 + "/t" + word2. (no "/t" at end).
+            if (n == 2) {
+//                for (int j = 1; j < n; j++) {
+                    nGramStr = nGramStr + "/t" + newWords[i + 1];
+//                }
             }
+
             //replace all non-alphanumeric char
             if (nGramStr != null) {
                 nGramStr = nGramStr.replaceAll("[^a-zA-Z0-9 ]", "").toLowerCase();
