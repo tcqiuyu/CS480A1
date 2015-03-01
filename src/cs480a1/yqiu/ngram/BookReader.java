@@ -134,9 +134,10 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
-        if (currentPos >= end) {
+        if (currentPos >= end || !hasDate) {
             return false;
         }
+
 
         //TODO:simple split by ".". Does not include abbr. case
 
