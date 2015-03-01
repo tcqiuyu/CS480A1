@@ -6,7 +6,6 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 /**
  * Created by Qiu on 2/25/2015.
@@ -45,7 +44,7 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 //        String regex = ".*[a-zA-Z0-9]+.*";
 
         for (String word : words) {
-            if (word.matches("^.*[a-zA-Z0-9].*$")) {
+            if (word.matches("^.*[a-zA-Z0-9].*$") && !word.equals("")) {
                 newWordsArray.add(word);
 
             }
