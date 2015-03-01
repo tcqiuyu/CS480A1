@@ -37,7 +37,7 @@ public class NGramCombiner extends Reducer<TextYearWritable, IntArrayWritable, T
 
         context.write(newKey, value);
 
-        throw (new IOException());
+
 
     }
 
