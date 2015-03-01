@@ -9,6 +9,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.CombineFileSplit;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.util.LineReader;
 
@@ -20,6 +21,7 @@ import java.io.IOException;
  */
 public class BookReader extends RecordReader<TextYearWritable, Text> {
 
+    private CombineFileSplit files;
     private LineReader lineReader;
     private TextYearWritable key = new TextYearWritable();
     private Text value;
@@ -34,6 +36,9 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
     private String currentSentenceStr = "";
     private String remainLineStr = "";
 
+    public BookReader(CombineFileSplit combineFileSplit) {
+        this.files = combineFileSplit;
+    }
     @Override
     public void initialize(InputSplit inputSplit, TaskAttemptContext context) throws IOException, InterruptedException {
         FileSplit split = (FileSplit) inputSplit;

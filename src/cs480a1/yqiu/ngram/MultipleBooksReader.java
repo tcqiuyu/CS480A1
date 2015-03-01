@@ -1,5 +1,6 @@
 package cs480a1.yqiu.ngram;
 
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -16,10 +17,11 @@ public class MultipleBooksReader extends RecordReader<TextYearWritable, Text> {
 
     private int index;
     private BookReader bookReader;
-
+    private int totalFiles;
     public MultipleBooksReader(CombineFileSplit split, TaskAttemptContext context, Integer index) throws Exception {
+        super();
         this.index = index;
-        this.bookReader = new BookReader();
+        throw (new IOException(index.toString()));
     }
 
     @Override
@@ -27,11 +29,12 @@ public class MultipleBooksReader extends RecordReader<TextYearWritable, Text> {
         CombineFileSplit combineFileSplit = (CombineFileSplit) split;
         FileSplit fileSplit = new FileSplit(combineFileSplit.getPath(index), combineFileSplit.getOffset(index),
                 combineFileSplit.getLength(), combineFileSplit.getLocations());
-
+        Path[] paths = combineFileSplit.getPaths();
+        totalFiles = paths.length;
         bookReader.initialize(fileSplit, context);
-        if (index > 1) {
-            throw (new IOException(combineFileSplit.getPath(index).getName()));
-        }
+//        if (index > 1) {
+//            throw (new IOException(combineFileSplit.getPath(index).getName()));
+//        }
     }
 
     @Override
