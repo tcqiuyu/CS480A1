@@ -26,12 +26,11 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
         words = currentSentence.split("\\s");
 
         IntWritable[] test = {new IntWritable(1), new IntWritable(1)};
-        context.write(key, new IntArrayWritable(test));
+//        context.write(key, new IntArrayWritable(test));
 //        throw (new IOException());
+        doNGram(1, words);
+        doNGram(2, words);
         throw (new IOException(key.toString()));
-//        doNGram(1, words);
-//        doNGram(2, words);
-
     }
 
     private void doNGram(int n, String[] words) throws IOException, InterruptedException {
@@ -48,10 +47,10 @@ public class NGramMapper extends Mapper<TextYearWritable, Text, TextYearWritable
 
         for (int i = 0; i < newWords.length + 1 - n; i++) {
             String nGramStr = newWords[i];
-            //construct n gram: e.g. word1 + "/t" + word2. (no "/t" at end).
+            //construct n gram: e.g. word1 + "\t" + word2. (no "/t" at end).
             if (n == 2) {
 //                for (int j = 1; j < n; j++) {
-                    nGramStr = nGramStr + "/t" + newWords[i + 1];
+                    nGramStr = nGramStr + "\t" + newWords[i + 1];
 //                }
             }
 

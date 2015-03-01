@@ -67,6 +67,6 @@ public class TextYearWritable implements WritableComparable<TextYearWritable> {
     }
 
     public String toString() {
-        return text + "/t" + year;
+        return text + "\t" + year;
     }
 }
