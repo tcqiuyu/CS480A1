@@ -121,8 +121,6 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
                 hasDate = false;
                 return false;
             }
-//            String[] valueStr = new String[]{releaseYearStr, filename};
-//            value = new TextYearWritable(valueStr);valueStr
             releaseYear = new IntWritable(year);
 
             return true;
@@ -167,7 +165,7 @@ public class BookReader extends RecordReader<TextYearWritable, Text> {
             boolean flag = true;
             while (flag) {
 
-                lineReader.readLine(currentLine);
+                currentPos += lineReader.readLine(currentLine);
                 String currentLineStr = currentLine.toString();
                 int periodPos = currentLineStr.indexOf(".");//period position
 
