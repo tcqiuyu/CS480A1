@@ -36,8 +36,8 @@ public class NGram {
         //input
 //        FileInputFormat.setInputPathFilter(job, TXTFilter.class);
 //        FileInputFormat.addInputPaths(job, args[args.length - 2]);
-        FileInputFormat.setInputDirRecursive(job, true);
         FileInputFormat.setInputPaths(job, new Path(args[args.length - 2]));
+        FileInputFormat.setInputDirRecursive(job, true);
         job.setInputFormatClass(MultipleBooksInputFormat.class);
 
         //output
