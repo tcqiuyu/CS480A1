@@ -16,29 +16,27 @@ public class NGramCombiner extends Reducer<TextYearWritable, IntArrayWritable, T
     public void reduce(TextYearWritable key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
 
         //key no need contain filename here. Remove it.
-//        String nGramStr = key.getText().toString().split("_")[0];
-//        Text nGram = new Text(nGramStr);
-        throw (new IOException(key.toString()));
+        String nGramStr = key.getText().toString().split("_")[0];
+        Text nGram = new Text(nGramStr);
+//        throw (new IOException(key.toString()));
 
         //new key = ngram + release year
-//        TextYearWritable newKey = new TextYearWritable(nGram, key.getYear());
-//
-//        int ngramOccurTemp = 0;
+        TextYearWritable newKey = new TextYearWritable(nGram, key.getYear());
+
+        int ngramOccurTemp = 0;
 
         //count ngram occurance in one file
-//        for (IntArrayWritable val : values) {
-//            ngramOccurTemp += val.get()[0].get();
-//        }
-//
-//        IntWritable ngramOccur = new IntWritable(ngramOccurTemp);
-//        IntWritable[] occurs = {ngramOccur, new IntWritable(1)};
-//
-//
-//        IntArrayWritable value = new IntArrayWritable(occurs);
-//
-//        context.write(newKey, value);
+        for (IntArrayWritable val : values) {
+            ngramOccurTemp += val.get()[0].get();
+        }
+
+        IntWritable ngramOccur = new IntWritable(ngramOccurTemp);
+        IntWritable[] occurs = {ngramOccur, new IntWritable(1)};
 
 
+        IntArrayWritable value = new IntArrayWritable(occurs);
+
+        context.write(newKey, value);
 
     }
 
