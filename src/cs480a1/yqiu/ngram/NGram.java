@@ -1,6 +1,7 @@
 package cs480a1.yqiu.ngram;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -40,6 +41,12 @@ public class NGram {
         job.setInputFormatClass(MultipleBooksInputFormat.class);
 
         //output
+        FileSystem fs = FileSystem.get(conf);
+        Path outputPath = new Path(args[args.length - 1]);
+        if (fs.exists(outputPath)) {
+            fs.delete(outputPath, true);
+            System.out.println("Output Path: \"" + outputPath.getName() + "\" exists. Deleted.");
+        }
         FileOutputFormat.setOutputPath(job, new Path(args[args.length - 1]));
 
         job.setOutputFormatClass(TextOutputFormat.class);
